@@ -1,0 +1,27 @@
+// Orbit config for this Android project. It lives in the app's repo, not in Orbit.
+//
+// Put the fixed, team-wide values here. Anything that changes per run comes from the command line:
+//   ./gradlew :composeApp:orbitDebugAndroidTest -Porbit.className=com.Foo -Porbit.executionMode=FANOUT
+//   ./gradlew :composeApp:orbitTest -Porbit.testApk=path/test.apk -Porbit.targetApk=path/app.apk
+//
+// Every option can be overridden as -Porbit.<name>. The override wins over the value set here.
+
+orbit {
+    grantAll = true
+    trackLogcat = true
+    logcatLevel = "I"
+    recordVideo = true
+    executionMode = "DISTRIBUTE"
+    availabilityTimeoutMin = 30L
+    ignoreFailures = false
+
+    // Fixed instrumentation args. -Porbit.instrumentationArgs=k=v,... is merged on top of these.
+    instrumentationArgs = [:]
+
+    // Custom logic works here too, e.g. the old spoon.gradle "TestGroup" idea:
+    //   ./gradlew orbitDebugAndroidTest -PTestGroup=Smoke
+    if (project.hasProperty("TestGroup")) {
+        instrumentationArgs.put("annotation", "io.github.rajvinodh.orbit.testapp.annotations." + project.TestGroup)
+        title = project.TestGroup
+    }
+}

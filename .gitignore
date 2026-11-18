@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+.kotlin/
+
+# Local machine config (SDK path, signing secrets)
+local.properties
+
+# IDE / OS
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Device artifacts and test outputs (APKs are far too big for GitHub)
+*.apk
+*.aab
+*.mp4
+orbit-output/
+orbit-report/node_modules/
+orbit-report/dist/
+
+# Publishing secrets
+secring.gpg
+*.gpg

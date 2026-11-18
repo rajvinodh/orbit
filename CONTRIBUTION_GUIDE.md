@@ -48,6 +48,52 @@ classDiagram
         +File output
         +File androidSdk
         +effectiveTestPackage() String
+        +logcatPriority(String)$ int
+    }
+
+    class ApkManifestReader {
+        <<utility>>
+        +readInstrumentation(File)$ InstrumentationInfo
+        +fillMissing(RunConfig)$ RunConfig
+    }
+
+    %% ── Gradle plugin (orbit-gradle-plugin) ──────────────────────────────────
+    class OrbitPlugin {
+        +apply(Project)
+        -createRunnerConfiguration() Configuration
+        -registerPrebuiltTask() orbitTest
+        +configureCommon(OrbitTestTask, OrbitExtension, GradleOverrides, Configuration)$
+    }
+    class OrbitExtension {
+        <<orbit DSL>>
+        +RegularFileProperty testApk
+        +RegularFileProperty targetApk
+        +Property~String~ executionMode
+        +MapProperty instrumentationArgs
+        +Property~Boolean~ ignoreFailures
+        +Property~String~ runnerVersion
+    }
+    class GradleOverrides {
+        +string(name) Provider
+        +bool(name) Provider
+        +list(name) Provider
+        +map(name) Provider
+        +regularFile(name) Provider
+    }
+    class AndroidVariantWiring {
+        +register(Project, OrbitExtension, GradleOverrides, Configuration)
+        -apkIn(Directory, BuiltArtifactsLoader) RegularFile
+    }
+    class OrbitTestTask {
+        +RegularFileProperty testApk
+        +RegularFileProperty targetApk
+        +ConfigurableFileCollection runnerClasspath
+        +runOrbit()
+        -buildCliArgs() List~String~
+    }
+    class OrbitCommand {
+        <<CLI main, own JVM>>
+        +run()
     }
 
     %% ── Orchestration ────────────────────────────────────────────────────────
@@ -343,6 +389,16 @@ classDiagram
 
     RunConfig --> RetryPolicy
     RunConfig --> TestSelectionStrategy
+    OrbitRunner --> ApkManifestReader : fillMissing()
+
+    OrbitPlugin --> OrbitExtension : creates
+    OrbitPlugin --> OrbitTestTask : registers orbitTest
+    OrbitPlugin --> AndroidVariantWiring : with com.android.application
+    AndroidVariantWiring --> OrbitTestTask : registers orbitVariantAndroidTest
+    OrbitTestTask --> GradleOverrides : -Porbit overrides the orbit DSL
+    OrbitTestTask --> OrbitCommand : javaexec CLI args, exit code
+    OrbitCommand --> RunConfig : builds
+    OrbitCommand --> OrbitRunner : run()
 ```
 
 ---

@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "title": "com.example.app · 2026-04-25 16:00",
+    "startedAt": 1745589600000,
+    "durationMs": 42000,
+    "orbitVersion": "1.0.0"
+  },
+  "summary": {
+    "total": 5,
+    "passed": 3,
+    "failed": 1,
+    "ignored": 1
+  },
+  "devices": [
+    {
+      "serial": "emulator-5554",
+      "status": "COMPLETED",
+      "model": "Pixel 7",
+      "apiLevel": 33,
+      "osVersion": "13",
+      "durationMs": 38000,
+      "disconnectedAt": null,
+      "tests": [
+        {
+          "className": "com.example.LoginTest",
+          "methodName": "testValidLogin",
+          "status": "PASS",
+          "startedAt": 1745589602000,
+          "durationMs": 3200,
+          "externalId": "C1001",
+          "exception": null,
+          "screenshots": [],
+          "video": null,
+          "logcat": [
+            { "time": "16:00:02.100", "level": "I", "tag": "LoginTest", "pid": 1234, "msg": "Login attempt started" },
+            { "time": "16:00:04.800", "level": "I", "tag": "LoginTest", "pid": 1234, "msg": "Login succeeded" }
+          ],
+          "crashLog": []
+        },
+        {
+          "className": "com.example.LoginTest",
+          "methodName": "testInvalidPassword",
+          "status": "FAIL",
+          "startedAt": 1745589606000,
+          "durationMs": 2400,
+          "externalId": "C1002",
+          "exception": "java.lang.AssertionError: expected [true] but found [false]\n  at com.example.LoginTest.testInvalidPassword(LoginTest.java:42)\n  at ...",
+          "screenshots": [],
+          "video": null,
+          "logcat": [
+            { "time": "16:00:06.200", "level": "I", "tag": "LoginTest", "pid": 1234, "msg": "Login attempt with bad password" },
+            { "time": "16:00:08.000", "level": "E", "tag": "LoginTest", "pid": 1234, "msg": "Assertion failed" }
+          ],
+          "crashLog": []
+        },
+        {
+          "className": "com.example.LoginTest",
+          "methodName": "testLogout",
+          "status": "PASS",
+          "startedAt": 1745589610000,
+          "durationMs": 1800,
+          "externalId": null,
+          "exception": null,
+          "screenshots": [],
+          "video": null,
+          "logcat": [],
+          "crashLog": []
+        }
+      ]
+    },
+    {
+      "serial": "emulator-5556",
+      "status": "COMPLETED",
+      "model": "Pixel 6",
+      "apiLevel": 32,
+      "osVersion": "12",
+      "durationMs": 30000,
+      "disconnectedAt": null,
+      "tests": [
+        {
+          "className": "com.example.LoginTest",
+          "methodName": "testValidLogin",
+          "status": "PASS",
+          "startedAt": 1745589603000,
+          "durationMs": 3600,
+          "externalId": "C1001",
+          "exception": null,
+          "screenshots": [],
+          "video": null,
+          "logcat": [],
+          "crashLog": []
+        },
+        {
+          "className": "com.example.LoginTest",
+          "methodName": "testInvalidPassword",
+          "status": "IGNORED",
+          "startedAt": 1745589608000,
+          "durationMs": 0,
+          "externalId": "C1002",
+          "exception": null,
+          "screenshots": [],
+          "video": null,
+          "logcat": [],
+          "crashLog": []
+        }
+      ]
+    }
+  ]
+}
