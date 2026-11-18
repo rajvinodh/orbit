@@ -16,17 +16,15 @@ You get two tasks:
 ```kotlin
 pluginManagement {
     repositories {
-        mavenLocal()          // until Orbit is published to a remote repository
         google()
-        mavenCentral()
+        mavenCentral()        // the Orbit plugin is published here
         gradlePluginPortal()
     }
 }
 dependencyResolutionManagement {
     repositories {
-        mavenLocal()          // the plugin resolves io.github.rajvinodh:orbit-runner from here
         google()
-        mavenCentral()
+        mavenCentral()        // the plugin resolves io.github.rajvinodh:orbit-runner from here
     }
 }
 ```
@@ -41,8 +39,9 @@ plugins {
 apply(from = "orbit.gradle")   // your team's fixed Orbit config
 ```
 
-To get the plugin into `~/.m2`, run this once from the orbit repo:
-`./gradlew :orbit-runner:publishToMavenLocal :orbit-gradle-plugin:publishToMavenLocal`.
+To try an unreleased build, run
+`./gradlew :orbit-runner:publishToMavenLocal :orbit-gradle-plugin:publishToMavenLocal` from the orbit
+repo and add `mavenLocal()` first in both repository blocks.
 
 ## 2. Keep your fixed config in `orbit.gradle` (in your project)
 

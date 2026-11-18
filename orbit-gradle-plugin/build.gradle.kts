@@ -3,7 +3,14 @@ plugins {
   // Gradle-style `Action<T>` lambdas with an implicit receiver (what `kotlin-dsl` sets up).
   kotlin("plugin.sam.with.receiver")
   `java-gradle-plugin`
-  `maven-publish`
+  id("com.vanniktech.maven.publish")
+}
+
+// Plugin jar + plugin marker to Maven Central. Coordinates and POM come from gradle.properties.
+mavenPublishing {
+  publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+  // Sign only when a key is configured, so publishToMavenLocal works without one.
+  if (providers.gradleProperty("signingInMemoryKey").isPresent) signAllPublications()
 }
 
 kotlin { jvmToolchain(17) }

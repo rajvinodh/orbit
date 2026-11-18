@@ -32,6 +32,21 @@ cd test-app
 
 Integration guide for app teams: [`orbit-gradle-plugin/README.md`](orbit-gradle-plugin/README.md).
 
+### Release to Maven Central
+
+`orbit-runner` and `orbit-gradle-plugin` (plus its plugin marker) are published with
+`com.vanniktech.maven.publish`. Coordinates and POM data are in `gradle.properties`.
+
+```bash
+# 1. Bump VERSION_NAME in gradle.properties, commit, push
+# 2. Tag. release.yml checks the tag matches VERSION_NAME, runs tests, signs and uploads
+git tag v1.0.0 && git push origin v1.0.0
+# 3. Click "Publish" on the deployment at https://central.sonatype.com/publishing/deployments
+```
+
+The workflow needs these repository secrets: `MAVEN_CENTRAL_USERNAME` and `MAVEN_CENTRAL_PASSWORD` (a
+Central Portal user token), `SIGNING_KEY` (ASCII-armored private GPG key) and `SIGNING_KEY_PASSWORD`.
+
 ---
 
 ## 2. Unit tests

@@ -1,0 +1,54 @@
+name: Release
+
+# Push a tag matching VERSION_NAME in gradle.properties, e.g. `git tag v1.0.0 && git push origin v1.0.0`.
+# Uploads orbit-runner + orbit-gradle-plugin (and its plugin marker) to the Maven Central Portal.
+# The deployment then waits in https://central.sonatype.com/publishing/deployments for "Publish".
+on:
+  push:
+    tags: [ "v*" ]
+
+jobs:
+  publish:
+    name: Publish to Maven Central
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check tag matches VERSION_NAME
+        run: |
+          version=$(grep '^VERSION_NAME=' gradle.properties | cut -d= -f2)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match VERSION_NAME=$version in gradle.properties"
+            exit 1
+          fi
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orbit-report/package-lock.json
+
+      # The report SPA is bundled into the orbit-runner jar.
+      - name: Install frontend deps
+        run: npm ci
+        working-directory: orbit-report
+
+      - name: Run tests
+        run: chmod +x gradlew && ./gradlew :orbit-runner:test :orbit-gradle-plugin:test
+
+      - name: Publish
+        run: ./gradlew :orbit-runner:publishToMavenCentral :orbit-gradle-plugin:publishToMavenCentral --no-configuration-cache
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}

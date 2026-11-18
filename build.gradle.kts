@@ -4,12 +4,15 @@ plugins {
   kotlin("plugin.sam.with.receiver") version "1.9.22" apply false
   id("com.android.library") version "8.5.2" apply false
   id("com.diffplug.spotless") version "8.7.0"
+  id("com.vanniktech.maven.publish") version "0.30.0" apply false
   jacoco
 }
 
 allprojects {
-  group = "io.github.rajvinodh"
-  version = "1.0.0"
+  // Coordinates and POM metadata live in gradle.properties (GROUP, VERSION_NAME, POM_*), which
+  // the vanniktech publish plugin reads.
+  group = property("GROUP").toString()
+  version = property("VERSION_NAME").toString()
 
   repositories {
     mavenCentral()

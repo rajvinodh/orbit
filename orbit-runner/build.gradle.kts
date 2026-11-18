@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.vanniktech.maven.publish.SonatypeHost
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 plugins {
@@ -7,7 +8,7 @@ plugins {
   java
   application
   jacoco
-  `maven-publish`
+  id("com.vanniktech.maven.publish")
   id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -51,7 +52,9 @@ val buildFrontend by
   tasks.registering(Exec::class) {
     description = "Builds the orbit-report React SPA"
     group = "build"
-    onlyIf { frontendDir.exists() }
+    // Local copy: a lambda that reads a script-level val drags the script into the config cache.
+    val dir = frontendDir
+    onlyIf { dir.exists() }
     workingDir(frontendDir)
     commandLine(if (isWindows) "npm.cmd" else "npm", "run", "build")
     inputs.dir(frontendDir.resolve("src"))
@@ -70,7 +73,8 @@ val copyFrontendResources by
     description = "Copies built frontend assets into the JAR resource tree"
     group = "build"
     dependsOn(buildFrontend)
-    onlyIf { frontendDir.resolve("dist").exists() }
+    val dist = frontendDir.resolve("dist")
+    onlyIf { dist.exists() }
     from(frontendDir.resolve("dist")) { include("index.html", "main.js", "main.css") }
     into(frontendResources.map { it.dir("orbit-report") })
   }
@@ -168,8 +172,9 @@ tasks.named<ShadowJar>("shadowJar") {
 }
 
 // ── Maven publication ─────────────────────────────────────────────────────────
-// Thin jar + POM dependencies. Consumed by orbit-gradle-plugin, which resolves it into an
-// isolated worker classpath. The fat CLI jar (shadowJar) is not published.
+// Thin jar + POM dependencies (+ sources/javadoc jars, signed) to Maven Central. Consumed by
+// orbit-gradle-plugin, which launches it as its own JVM. The fat CLI jar (shadowJar) is not
+// published. Coordinates and POM come from gradle.properties.
 
 // Shadow adds its (classifier-less) fat jar to the java component, which would clash with the
 // thin jar's coordinates. Publish only the thin jar.
@@ -179,15 +184,11 @@ tasks.named<ShadowJar>("shadowJar") {
   skip()
 }
 
-publishing {
-  publications {
-    create<MavenPublication>("maven") {
-      from(components["java"])
-      artifactId = "orbit-runner"
-      pom {
-        name.set("Orbit Runner")
-        description.set("Runs Android instrumentation tests across multiple devices")
-      }
-    }
-  }
+mavenPublishing {
+  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+  // Sign only when a key is configured, so publishToMavenLocal works without one.
+  if (providers.gradleProperty("signingInMemoryKey").isPresent) signAllPublications()
 }
+
+// The sources jar includes the generated report resources dir, so it must run after the copy.
+tasks.matching { it.name == "sourcesJar" }.configureEach { dependsOn(copyFrontendResources) }
