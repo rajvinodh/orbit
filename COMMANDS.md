@@ -44,8 +44,9 @@ git tag v1.0.0 && git push origin v1.0.0
 # 3. Click "Publish" on the deployment at https://central.sonatype.com/publishing/deployments
 ```
 
-The workflow needs these repository secrets: `MAVEN_CENTRAL_USERNAME` and `MAVEN_CENTRAL_PASSWORD` (a
-Central Portal user token), `SIGNING_KEY` (ASCII-armored private GPG key) and `SIGNING_KEY_PASSWORD`.
+The workflow needs these repository secrets (same values as `page-objects-annonated`):
+`MAVENCENTRAL_USERNAME` and `MAVENCENTRAL_PASSWORD` (a Central Portal user token), `SIGNING_KEY`
+(ASCII-armored private GPG key) and `SIGNING_PASSWORD`.
 
 ---
 
