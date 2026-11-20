@@ -70,8 +70,8 @@ android {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(compose.uiTestJUnit4)
-    androidTestImplementation("io.github.rajvinodh:orbit-client:1.0.0")
-    androidTestImplementation("io.github.rajvinodh:orbit-client-android:1.0.0")
+    androidTestImplementation("io.github.rajvinodh:orbit-client:1.0.1")
+    androidTestImplementation("io.github.rajvinodh:orbit-client-android:1.0.1")
   }
 }
 

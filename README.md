@@ -13,7 +13,7 @@ Optional extras: logcat capture, screen recording, network logs, and coverage.
 // settings.gradle.kts: mavenCentral() in pluginManagement and dependencyResolutionManagement
 plugins {
     id("com.android.application")
-    id("io.github.rajvinodh.orbit") version "1.0.0"
+    id("io.github.rajvinodh.orbit") version "1.0.1"
 }
 ```
 
@@ -28,7 +28,7 @@ Setup and all the options are in [orbit-gradle-plugin/README.md](orbit-gradle-pl
 
 ```bash
 ./gradlew :orbit-runner:shadowJar
-java -jar orbit-runner/build/libs/orbit-runner-1.0.0.jar app-debug-androidTest.apk app-debug.apk
+java -jar orbit-runner/build/libs/orbit-runner-1.0.1.jar app-debug-androidTest.apk app-debug.apk
 ```
 
 ## Modules

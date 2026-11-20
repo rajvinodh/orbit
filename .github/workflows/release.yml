@@ -1,7 +1,8 @@
 name: Release
 
-# Push a tag matching VERSION_NAME in gradle.properties, e.g. `git tag v1.0.0 && git push origin v1.0.0`.
-# Uploads orbit-runner + orbit-gradle-plugin (and its plugin marker) to the Maven Central Portal.
+# Push a tag matching VERSION_NAME in gradle.properties, e.g. `git tag v1.0.1 && git push origin v1.0.1`.
+# Uploads orbit-runner, orbit-client, orbit-client-android and orbit-gradle-plugin (and its plugin
+# marker) to the Maven Central Portal.
 # The deployment then waits in https://central.sonatype.com/publishing/deployments for "Publish".
 on:
   push:
@@ -42,11 +43,24 @@ jobs:
         run: npm ci
         working-directory: orbit-report
 
+      # orbit-client compiles against android.jar and orbit-client-android needs the Android SDK.
+      # The runner image ships one; this makes sure a platform is installed and ANDROID_HOME is set.
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platforms;android-35
+
       - name: Run tests
-        run: chmod +x gradlew && ./gradlew :orbit-runner:test :orbit-gradle-plugin:test
+        run: chmod +x gradlew && ./gradlew :orbit-runner:test :orbit-client:test :orbit-gradle-plugin:test
 
       - name: Publish
-        run: ./gradlew :orbit-runner:publishToMavenCentral :orbit-gradle-plugin:publishToMavenCentral --no-configuration-cache
+        run: >-
+          ./gradlew
+          :orbit-runner:publishToMavenCentral
+          :orbit-client:publishToMavenCentral
+          :orbit-client-android:publishToMavenCentral
+          :orbit-gradle-plugin:publishToMavenCentral
+          --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVENCENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVENCENTRAL_PASSWORD }}

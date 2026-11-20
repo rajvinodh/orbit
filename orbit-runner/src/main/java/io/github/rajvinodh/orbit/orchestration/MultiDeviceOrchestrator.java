@@ -49,7 +49,7 @@ import org.apache.commons.io.FileUtils;
 @Slf4j
 public class MultiDeviceOrchestrator {
 
-  private static final String ORBIT_VERSION = "1.0.0";
+  private static final String ORBIT_VERSION = "1.0.1";
   private static final DateTimeFormatter TITLE_DATE_FMT =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault());
 

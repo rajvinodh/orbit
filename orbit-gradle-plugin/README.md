@@ -33,14 +33,19 @@ dependencyResolutionManagement {
 ```kotlin
 plugins {
     id("com.android.application")
-    id("io.github.rajvinodh.orbit") version "1.0.0"
+    id("io.github.rajvinodh.orbit") version "1.0.1"
 }
 
 apply(from = "orbit.gradle")   // your team's fixed Orbit config
+
+dependencies {
+    // Device-side client (pulls in io.github.rajvinodh:orbit-client)
+    androidTestImplementation("io.github.rajvinodh:orbit-client-android:1.0.1")
+}
 ```
 
 To try an unreleased build, run
-`./gradlew :orbit-runner:publishToMavenLocal :orbit-gradle-plugin:publishToMavenLocal` from the orbit
+`./gradlew :orbit-runner:publishToMavenLocal :orbit-client:publishToMavenLocal :orbit-client-android:publishToMavenLocal :orbit-gradle-plugin:publishToMavenLocal` from the orbit
 repo and add `mavenLocal()` first in both repository blocks.
 
 ## 2. Keep your fixed config in `orbit.gradle` (in your project)

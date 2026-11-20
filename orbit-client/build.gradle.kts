@@ -1,6 +1,9 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
   java
   jacoco
+  id("com.vanniktech.maven.publish")
 }
 
 java {
@@ -60,3 +63,29 @@ tasks.jacocoTestReport {
     xml.required.set(true)
   }
 }
+
+// ── Maven publication ─────────────────────────────────────────────────────────
+// Jar + POM (+ sources/javadoc jars, signed) to Maven Central. Consumed by Android projects as an
+// androidTestImplementation dependency. Coordinates and POM come from gradle.properties.
+
+mavenPublishing {
+  publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+  // Sign only when a key is configured, so publishToMavenLocal works without one.
+  if (providers.gradleProperty("signingInMemoryKey").isPresent) signAllPublications()
+}
+
+// Without android.jar compileJava is skipped, which would publish an empty jar. Fail instead.
+val hasAndroidJar = androidJar != null
+
+tasks
+  .matching { it.name.startsWith("publish") }
+  .configureEach {
+    doFirst {
+      if (!hasAndroidJar) {
+        throw GradleException(
+          "orbit-client: cannot publish without android.jar. Set ANDROID_HOME (or " +
+            "ANDROID_SDK_ROOT) to an SDK with a platforms/android-* dir."
+        )
+      }
+    }
+  }

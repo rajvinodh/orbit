@@ -8,7 +8,7 @@ All commands run from the repo root unless noted otherwise. Use `./gradlew` (the
 
 ```bash
 ./gradlew build                 # compile + test everything
-./gradlew :orbit-runner:shadowJar   # fat JAR of the CLI (orbit-runner/build/libs/orbit-runner-1.0.0.jar)
+./gradlew :orbit-runner:shadowJar   # fat JAR of the CLI (orbit-runner/build/libs/orbit-runner-1.0.1.jar)
 ./gradlew :orbit-runner:run --args="<test.apk> --serial emulator-5554"   # run the CLI directly via Gradle
 ```
 
@@ -17,8 +17,9 @@ All commands run from the repo root unless noted otherwise. Use `./gradlew` (the
 ### Gradle plugin (`orbit-gradle-plugin`)
 
 ```bash
-# Publish runner + plugin to ~/.m2 so any local Android project can use them
-./gradlew :orbit-runner:publishToMavenLocal :orbit-gradle-plugin:publishToMavenLocal
+# Publish runner, clients + plugin to ~/.m2 so any local Android project can use them
+./gradlew :orbit-runner:publishToMavenLocal :orbit-client:publishToMavenLocal \
+  :orbit-client-android:publishToMavenLocal :orbit-gradle-plugin:publishToMavenLocal
 
 ./gradlew :orbit-gradle-plugin:test            # unit + TestKit tests (no device)
 ./gradlew :orbit-gradle-plugin:validatePlugins # task annotation checks
@@ -34,13 +35,16 @@ Integration guide for app teams: [`orbit-gradle-plugin/README.md`](orbit-gradle-
 
 ### Release to Maven Central
 
-`orbit-runner` and `orbit-gradle-plugin` (plus its plugin marker) are published with
-`com.vanniktech.maven.publish`. Coordinates and POM data are in `gradle.properties`.
+`orbit-runner`, `orbit-client`, `orbit-client-android` (AAR) and `orbit-gradle-plugin` (plus its
+plugin marker) are published with `com.vanniktech.maven.publish`. Coordinates and shared POM data
+are in the root `gradle.properties`; per-module name/description in each module's `gradle.properties`.
+Publishing `orbit-client` fails if `ANDROID_HOME` has no `platforms/android-*` (it would otherwise
+publish an empty jar).
 
 ```bash
 # 1. Bump VERSION_NAME in gradle.properties, commit, push
 # 2. Tag. release.yml checks the tag matches VERSION_NAME, runs tests, signs and uploads
-git tag v1.0.0 && git push origin v1.0.0
+git tag v1.0.1 && git push origin v1.0.1
 # 3. Click "Publish" on the deployment at https://central.sonatype.com/publishing/deployments
 ```
 
