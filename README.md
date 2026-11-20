@@ -9,20 +9,13 @@ time, then gives you one HTML report covering all of them.
 For each test the report can show screenshots, logcat, a screen recording, network logs
 (Chucker), files saved by the test, and code coverage.
 
-<!-- SCREENSHOT 1: docs/images/report-overview.png
-     The report's landing page after a run on 2+ devices: summary (passed / failed / ignored),
-     device list and the test list. -->
 ![Report overview](docs/images/report-overview.png)
 
-<!-- SCREENSHOT 2: docs/images/report-test-detail.png
-     One FAILED test opened: stack trace, a screenshot taken with Orbit.screenshot(), logcat and
-     the video player. -->
 ![Test detail](docs/images/report-test-detail.png)
 
-<!-- SCREENSHOT 3: docs/images/report-devices.png
-     The per-device view (a FANOUT run makes this most useful): the same tests side by side
-     across devices. -->
 ![Per-device results](docs/images/report-devices.png)
+
+![Filtering by device and status](docs/images/report-filters.png)
 
 ---
 
